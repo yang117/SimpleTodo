@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,13 +27,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupUI(@NonNull List<Todo> todos) {
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.crappy_list);
-        linearLayout.removeAllViews();
-
-        for(Todo todo : todos) {
-            View view = getListItemView(todo);
-            linearLayout.addView(view);
-        }
+        ListView listView = (ListView) findViewById(R.id.main_list_view);
+        TodoListAdapter adapter = new TodoListAdapter(this, todos);
+        listView.setAdapter(adapter);
 
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -42,13 +39,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "fab clicked", Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    @NonNull
-    private View getListItemView(@NonNull Todo todo) {
-        View view = getLayoutInflater().inflate(R.layout.main_list_item, null);
-        ((TextView)view.findViewById(R.id.main_list_item_text)).setText(todo.text);
-        return view;
     }
 
     @NonNull

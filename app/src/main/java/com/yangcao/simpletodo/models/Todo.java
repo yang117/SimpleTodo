@@ -6,10 +6,6 @@ import android.support.annotation.NonNull;
 
 import java.util.Date;
 
-/**
- * Created by Rainie on 5/23/17.
- */
-
 public class Todo implements Parcelable {
 
     public String text;
