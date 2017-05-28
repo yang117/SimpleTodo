@@ -11,19 +11,39 @@ import java.util.Locale;
 
 public class DateUtils {
 
-    private static DateFormat dateFormat = new SimpleDateFormat("yyyy MM dd HH:mm", Locale.getDefault());
+    private static DateFormat dateFormat =
+            new SimpleDateFormat("yyyy MM dd HH:mm", Locale.getDefault());
 
+    //"Wed, 01 20, 2017"
+    private static DateFormat dateFormatDate =
+            new SimpleDateFormat("EEE, MM dd, yyyy", Locale.getDefault());
+
+    //"11:59"
+    private static DateFormat dateFormateTime =
+            new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+    @NonNull
     public static Date stringToDate(@NonNull String string) {
         try {
             return dateFormat.parse(string);
         } catch (ParseException e) {
-//            e.printStackTrace();
             return Calendar.getInstance().getTime();
         }
     }
 
+    @NonNull
     public static String dateToString(@NonNull Date date) {
         return dateFormat.format(date);
+    }
+
+    @NonNull
+    public static String dateToStringDate(@NonNull Date date) {
+        return dateFormatDate.format(date);
+    }
+
+    @NonNull
+    public static String dateToStringTime(@NonNull Date date) {
+        return dateFormateTime.format(date);
     }
 
 }
