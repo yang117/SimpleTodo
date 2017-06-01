@@ -30,6 +30,7 @@ import com.yangcao.simpletodo.utils.UIUtils;
 import java.util.Calendar;
 import java.util.Date;
 
+@SuppressWarnings("ConstantConditions")
 public class TodoEditActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener{
