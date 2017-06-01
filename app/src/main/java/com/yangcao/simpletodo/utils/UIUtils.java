@@ -9,7 +9,7 @@ public class UIUtils {
 
     public static void setTextViewStrikeThrough(@NonNull TextView tv, boolean strikeThough) {
         if (strikeThough) {
-            //strike thought effect on the text
+            //下划线strike thought effect on the text
             tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             //no strike through effect

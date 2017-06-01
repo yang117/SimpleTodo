@@ -19,7 +19,7 @@ public class DateUtils {
             new SimpleDateFormat("EEE, MM dd, yyyy", Locale.getDefault());
 
     //"11:59"
-    private static DateFormat dateFormateTime =
+    private static DateFormat dateFormatTime =
             new SimpleDateFormat("HH:mm", Locale.getDefault());
 
     @NonNull
@@ -43,7 +43,7 @@ public class DateUtils {
 
     @NonNull
     public static String dateToStringTime(@NonNull Date date) {
-        return dateFormateTime.format(date);
+        return dateFormatTime.format(date);
     }
 
 }

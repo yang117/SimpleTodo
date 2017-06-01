@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 public class ModelUtils {
@@ -25,7 +26,11 @@ public class ModelUtils {
                 PREF_NAME, Context.MODE_PRIVATE);
 
         String jsonString = sp.getString(key, "");
-        return gson.fromJson(jsonString, typeToken.getType());
-        //没写try/catch
+        try {
+            return gson.fromJson(jsonString, typeToken.getType());
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

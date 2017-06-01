@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, TodoEditActivity.class);
@@ -107,10 +106,6 @@ public class MainActivity extends AppCompatActivity {
         if (todos == null){
             todos = new ArrayList<>();
         }
-    }
-
-    private void setupUI(@NonNull List<Todo> todos) {
-
     }
 
 }

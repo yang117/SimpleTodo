@@ -26,8 +26,7 @@ public class Todo implements Parcelable {
         text = in.readString();
 
         long date = in.readLong();
-        remindDate = date == 0 ? null : new Date(date);
-//        remindDate = new Date(in.readLong());
+        remindDate = date == 0 ? null : new Date(date); //读取提醒时间为0就把date设为null
         done = in.readByte() != 0; //byte --> boolean
     }
 
@@ -52,8 +51,7 @@ public class Todo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(text);
-//        dest.writeLong(remindDate.getTime());
-        dest.writeLong(remindDate != null ? remindDate.getTime() : 0);
+        dest.writeLong(remindDate != null ? remindDate.getTime() : 0); //没有设提醒时间就写入为0
         dest.writeByte((byte) (done ? 1 : 0));
     }
 }

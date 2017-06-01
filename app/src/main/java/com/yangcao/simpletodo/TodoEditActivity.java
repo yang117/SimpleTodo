@@ -3,7 +3,9 @@ package com.yangcao.simpletodo;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ public class TodoEditActivity extends AppCompatActivity implements
 
     public static final String KEY_TODO = "todo";
     public static final String KEY_TODO_ID = "todo_id";
+    public static final String KEY_NOTIFICATION_ID = "notification_id";
 
     private EditText todoEdit;
     private TextView dateTv;
@@ -48,10 +51,12 @@ public class TodoEditActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         todo = getIntent().getParcelableExtra(KEY_TODO);
-        remindDate = todo != null ? todo.remindDate : null;
-        // if this activity is for creating a new todo_item, set remindDate to null
+        remindDate = todo != null
+                ? todo.remindDate
+                : null;  // if this activity is for creating a new todo_item, set remindDate to null
 
         setupUI();
+        cancelNotificationIfNeeded();
     }
 
     @Override
@@ -63,6 +68,19 @@ public class TodoEditActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    private void cancelNotificationIfNeeded() {
+        int notificationId = getIntent().getIntExtra(KEY_NOTIFICATION_ID, -1);
+        if (notificationId != -1) {
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).cancel(notificationId);
+        }
+    }
+
+    private void setupActionBar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setElevation(0);
+        setTitle(null);
+    }
+
     private void setupUI() {
         setContentView(R.layout.activity_edit_todo);
         setupActionBar();
@@ -72,10 +90,10 @@ public class TodoEditActivity extends AppCompatActivity implements
         timeTv = (TextView)findViewById(R.id.todo_detail_time);
         completeCb = (CheckBox)findViewById(R.id.todo_detail_complete);
 
-        //initialize saved data and display
+        //initialize saved data，设置text和checkbox
         if (todo != null) {
             todoEdit.setText(todo.text);
-            UIUtils.setTextViewStrikeThrough(todoEdit, todo.done);
+            UIUtils.setTextViewStrikeThrough(todoEdit, todo.done); //设置删除线
             completeCb.setChecked(todo.done);
 
             findViewById(R.id.todo_delete).setOnClickListener(new View.OnClickListener() {
@@ -88,7 +106,7 @@ public class TodoEditActivity extends AppCompatActivity implements
             findViewById(R.id.todo_delete).setVisibility(View.GONE);
         }
 
-        if (remindDate != null) {
+        if (remindDate != null) { //设置提醒时间
             dateTv.setText(DateUtils.dateToStringDate(remindDate));
             timeTv.setText(DateUtils.dateToStringTime(remindDate));
         } else {
@@ -101,13 +119,7 @@ public class TodoEditActivity extends AppCompatActivity implements
         setupSaveButton();
     }
 
-    private void setupActionBar() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setElevation(0);
-        setTitle(null);
-    }
-
-    private void setupDatePicker() {
+    private void setupDatePicker() {  //时间设置对话框
         dateTv.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -145,49 +157,27 @@ public class TodoEditActivity extends AppCompatActivity implements
                 todoEdit.setTextColor(isChecked? Color.GRAY : Color.WHITE);
             }
         });
+
+        // use this wrapper to make it possible for users to click on the entire row to change the checkbox
+        View completeWrapper = findViewById(R.id.todo_detail_complete_wrapper);
+        completeWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                completeCb.setChecked(!completeCb.isChecked()); //更改checkbox
+            }
+        });
     }
 
     private void setupSaveButton() {
         //this fab act as a save button, no need of a menu item
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.todo_detail_done);
         fab.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 saveAndExit();
             }
         });
     }
-
-    private void saveAndExit() {
-        //save current data
-        if (todo == null) { //create
-            todo = new Todo(todoEdit.getText().toString(), remindDate);
-        } else { //edit
-            todo.text = todoEdit.getText().toString();
-            todo.remindDate = remindDate;
-        }
-
-        todo.done = completeCb.isChecked();
-
-        if (remindDate != null) { //date可能为空
-            // set alarm when saving the todo_item
-            AlarmUtils.setAlarm(this, remindDate);
-        }
-
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(KEY_TODO, todo);
-        setResult(Activity.RESULT_OK, resultIntent);
-        finish();
-    }
-
-    private void delete() {
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(KEY_TODO_ID, todo.id);
-        setResult(Activity.RESULT_OK, resultIntent);
-        finish();
-    }
-
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -208,6 +198,35 @@ public class TodoEditActivity extends AppCompatActivity implements
 
         remindDate = c.getTime();
         timeTv.setText(DateUtils.dateToStringTime(remindDate));
+    }
+
+    private void saveAndExit() {
+        //save current data to object
+        if (todo == null) { //create
+            todo = new Todo(todoEdit.getText().toString(), remindDate);
+        } else { //edit
+            todo.text = todoEdit.getText().toString();
+            todo.remindDate = remindDate;
+        }
+
+        todo.done = completeCb.isChecked();
+
+        if (remindDate != null) { //date可能没有设置
+            // set alarm when saving the todo_item，保存的时候才需要去调用设置alarm
+            AlarmUtils.setAlarm(this, todo);
+        }
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(KEY_TODO, todo);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
+    }
+
+    private void delete() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(KEY_TODO_ID, todo.id);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
     }
 
     private Calendar getCalendarFromRemindDate() {
