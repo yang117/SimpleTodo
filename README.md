@@ -8,4 +8,6 @@
 * Using Fab to constantly add new items.
 
 ![image](https://github.com/yang117/SimpleTodo/raw/master/screenshot/main_UI.jpeg)
+![image](https://github.com/yang117/SimpleTodo/raw/master/screenshot/edit_form.jpeg)
+
 
