@@ -10,7 +10,7 @@
 
 
 <div align=center>
-<img src="https://github.com/yang117/SimpleTodo/raw/master/screenshot/main_UI.jpeg" width="400" height="800" alt="Main UI"/> <img src="https://github.com/yang117/SimpleTodo/raw/master/screenshot/edit_form.jpeg" width="400" height="800" alt="Edit form"/>
+<img src="https://github.com/yang117/SimpleTodo/raw/master/screenshot/main_UI.jpeg" width="260" height="480" alt="Main UI"/> <img src="https://github.com/yang117/SimpleTodo/raw/master/screenshot/edit_form.jpeg" width="260" height="480" alt="Edit form"/>
 </div>
 
 
